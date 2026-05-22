@@ -180,8 +180,22 @@
         .ethics-grid { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-top: 24px; }
         .ethics-item { background: white; border-radius: 60px; padding: 10px 24px; font-weight: 600; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
         
+        /* QR personalizado */
+        .qr-container {
+            background: white;
+            border-radius: 28px;
+            padding: 20px;
+            display: inline-block;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+        .qr-container img {
+            width: 180px;
+            height: 180px;
+            display: block;
+            border-radius: 16px;
+        }
+        
         footer { background: #0f172a; color: #94a3b8; text-align: center; padding: 40px 0; }
-        .qr-placeholder { background: white; border-radius: 24px; padding: 24px; text-align: center; display: inline-block; margin-top: 20px; }
         
         @media (max-width: 640px) {
             .section-title { font-size: 1.6rem; }
@@ -189,6 +203,7 @@
             .hero p { font-size: 1rem; }
             .btn { padding: 14px 28px; font-size: 1rem; }
             .card { padding: 20px; }
+            .qr-container img { width: 140px; height: 140px; }
         }
     </style>
 </head>
@@ -427,14 +442,17 @@
         </div>
     </section>
 
-    <!-- SECCIÓN 10: CIERRE -->
+    <!-- SECCIÓN 10: CIERRE CON QR REAL -->
     <section id="cierre" style="background: linear-gradient(110deg, #eef2ff 0%, #ffffff 100%); border-radius: 48px; margin-bottom: 40px; padding: 48px 32px; text-align: center;">
         <h2 class="section-title" style="font-size: 2rem;">🚀 ¡Elige TIC's y construye tu futuro!</h2>
         <p style="font-size: 1.2rem;"><strong>Tecnologías de la Información y la Comunicación</strong><br>Capacitación para el trabajo · COBAEM 03 Chimalhuacán</p>
-        <div class="qr-placeholder">
-            <i class="fas fa-qrcode" style="font-size: 5rem; color: #0f172a;"></i>
-            <p><strong>Escanea este código</strong><br>Guarda esta página en tu celular</p>
+        
+        <!-- CÓDIGO QR REAL -->
+        <div class="qr-container">
+            <img src="qrtics.png" alt="Código QR - Capacitación TIC's" width="180" height="180">
         </div>
+        <p style="margin-top: 16px; font-weight: 500;">📱 Escanea este código y guarda esta página en tu celular</p>
+        
         <button class="btn" style="background: #0f172a; margin-top: 24px;" onclick="alert('¡Excelente decisión! 💪 Habla con tu tutor para elegir la capacitación en TIC\'s. ¡Te esperamos!')">¡Quiero ser protagonista!</button>
         <p style="margin-top: 32px; font-weight: 600;">Docente: LIA José Huidobro Espejel · Ciclo Escolar 2025-2026</p>
         <p style="margin-top: 12px;"><i class="fas fa-check-circle" style="color: #10b981;"></i> Metodología activa · ABP · Gamificación · Trabajo colaborativo · Vinculación PAEC</p>
@@ -453,11 +471,11 @@
 <script>
     // Menú hamburguesa toggle
     const menuToggle = document.getElementById('menuToggle');
-    const navLinks = document.getElementById('navLinks');
+    const navLinksEl = document.getElementById('navLinks');
     
     if (menuToggle) {
         menuToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('show');
+            navLinksEl.classList.toggle('show');
         });
     }
     
@@ -469,9 +487,8 @@
             const target = document.getElementById(targetId);
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth' });
-                // Cerrar menú hamburguesa si está abierto
-                if (navLinks.classList.contains('show')) {
-                    navLinks.classList.remove('show');
+                if (navLinksEl.classList.contains('show')) {
+                    navLinksEl.classList.remove('show');
                 }
             }
         });
