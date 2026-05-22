@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>TIC's · Capacitación para el trabajo · COBAEM 03</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f8fafc; 
+            color: #1e293b; 
+            line-height: 1.5; 
+            font-size: 18px;
+        }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+        
+        .navbar { 
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 16px 0; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+        .navbar.scrolled { padding: 12px 0; background: rgba(15, 23, 42, 0.98); }
+        .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .logo { color: white; font-size: 1.4rem; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
+        .logo:hover { opacity: 0.9; }
+        .logo span { color: #38bdf8; }
+        .logo small { font-size: 0.7rem; font-weight: 400; color: #94a3b8; display: block; }
+        
+        .menu-toggle { display: none; background: none; border: none; color: white; font-size: 1.8rem; cursor: pointer; padding: 8px; }
+        .nav-links { display: flex; gap: 20px; flex-wrap: wrap; }
+        .nav-links a { color: #cbd5e1; text-decoration: none; font-weight: 600; font-size: 1rem; transition: all 0.2s; padding: 8px 0; position: relative; }
+        .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: #38bdf8; transition: width 0.3s ease; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: #38bdf8; }
+        
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-links { display: none; width: 100%; flex-direction: column; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #334155; }
+            .nav-links.show { display: flex; }
+            .nav-links a::after { display: none; }
+            body { font-size: 16px; }
+        }
+        
+        section { padding: 80px 0; border-bottom: 1px solid #e2e8f0; }
+        .section-title { 
+            font-size: 2.2rem; font-weight: 800; margin-bottom: 24px; 
+            background: linear-gradient(135deg, #0f172a, #3b82f6, #8b5cf6);
+            background-clip: text; -webkit-background-clip: text; color: transparent;
+        }
+        
+        /* Hero con imagen de fondo realista */
+        .hero { 
+            background: linear-gradient(135deg, rgba(15,23,42,0.85), rgba(15,23,42,0.9)), url('hero-tic.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white; 
+            padding: 120px 0; 
+            text-align: center; 
+            position: relative;
+        }
+        .hero h1 { font-size: 3.2rem; font-weight: 900; margin-bottom: 20px; position: relative; z-index: 1; }
+        .hero h1 span { color: #38bdf8; }
+        .typing-container { font-size: 1.3rem; max-width: 750px; margin: 0 auto 35px; min-height: 85px; position: relative; z-index: 1; }
+        .typing-text { background: linear-gradient(90deg, #38bdf8, #8b5cf6); background-clip: text; -webkit-background-clip: text; color: transparent; font-weight: 700; }
+        
+        .btn { display: inline-block; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; padding: 16px 36px; border-radius: 60px; font-weight: 700; font-size: 1.1rem; transition: all 0.3s ease; cursor: pointer; border: none; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(59,130,246,0.4); }
+        
+        .go-top { position: fixed; bottom: 30px; right: 30px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s; z-index: 999; }
+        .go-top.show { opacity: 1; visibility: visible; }
+        
+        .tooltip-icon { position: relative; cursor: help; border-bottom: 1px dashed #3b82f6; display: inline-block; }
+        .tooltip-icon:hover::after { content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); background: #0f172a; color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; white-space: nowrap; z-index: 100; }
+        
+        .counter-card { text-align: center; padding: 30px; background: white; border-radius: 28px; box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
+        .counter-number { font-size: 3rem; font-weight: 800; background: linear-gradient(135deg, #3b82f6, #8b5cf6); background-clip: text; -webkit-background-clip: text; color: transparent; }
+        
+        .grid-2, .grid-3, .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-top: 20px; }
+        .card { background: white; border-radius: 28px; padding: 28px; box-shadow: 0 12px 24px rgba(0,0,0,0.08); transition: all 0.3s ease; border: 1px solid #eef2ff; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 25px 35px rgba(0,0,0,0.12); }
+        .card i { font-size: 2.2rem; margin-bottom: 16px; display: inline-block; }
+        .card h3 { font-size: 1.4rem; margin-bottom: 12px; font-weight: 700; }
+        
+        .badge { display: inline-block; padding: 5px 14px; border-radius: 40px; font-size: 0.75rem; font-weight: 700; margin: 8px 4px 0 0; }
+        .badge-blue { background: #3b82f6; color: white; }
+        .badge-purple { background: #8b5cf6; color: white; }
+        .badge-amber { background: #f59e0b; color: white; }
+        .badge-red { background: #ef4444; color: white; }
+        .badge-green { background: #10b981; color: white; }
+        
+        .timeline { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 30px; }
+        .semester { background: white; border-radius: 28px; padding: 24px; flex: 1; min-width: 220px; border-top: 8px solid #3b82f6; box-shadow: 0 8px 20px rgba(0,0,0,0.06); transition: all 0.3s ease; }
+        .semester:hover { transform: translateY(-5px); }
+        .semester h4 { font-size: 1.6rem; font-weight: 800; color: #0f172a; margin-bottom: 12px; }
+        .semester .product { font-size: 0.85rem; font-weight: 700; margin-top: 12px; }
+        
+        .benefits-row { display: flex; flex-wrap: wrap; gap: 28px; margin: 30px 0; }
+        .benefit-col { flex: 1; min-width: 220px; background: white; border-radius: 28px; padding: 28px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.06); transition: all 0.3s ease; }
+        .benefit-col:hover { transform: translateY(-5px); }
+        
+        .ethics-card { background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-radius: 32px; padding: 40px; text-align: center; }
+        .ethics-grid { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-top: 24px; }
+        .ethics-item { background: white; border-radius: 60px; padding: 10px 24px; font-weight: 600; transition: all 0.3s ease; }
+        .ethics-item:hover { transform: scale(1.05); background: #3b82f6; color: white; }
+        
+        .qr-container { background: white; border-radius: 28px; padding: 20px; display: inline-block; box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+        .qr-container img { width: 180px; height: 180px; display: block; border-radius: 16px; }
+        
+        .counter-row { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; margin: 40px 0; }
+        .counter-card small { display: block; margin-top: 8px; color: #64748b; }
+        
+        .docente-imagen { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 4px solid #3b82f6; }
+        
+        footer { background: #0f172a; color: #94a3b8; text-align: center; padding: 40px 0; }
+        
+        @media (max-width: 640px) {
+            .section-title { font-size: 1.6rem; }
+            .hero h1 { font-size: 2rem; }
+            .typing-container { font-size: 1rem; min-height: 100px; }
+            .btn { padding: 14px 28px; font-size: 1rem; }
+            .card { padding: 20px; }
+            .counter-number { font-size: 2.2rem; }
+            .docente-imagen { width: 80px; height: 80px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar" id="navbar">
+    <div class="container nav-flex">
+        <div class="logo" onclick="location.href='#inicio'">TIC's <span>COBAEM 03</span><small>Tecnologías de la Información y la Comunicación</small></div>
+        <button class="menu-toggle" id="menuToggle">☰</button>
+        <div class="nav-links" id="navLinks">
+            <a href="#inicio">🏠 Inicio</a>
+            <a href="#plan">📚 Plan de estudios</a>
+            <a href="#proyectos-sec">🎯 Proyectos</a>
+            <a href="#porque-tic">💡 ¿Por qué TIC's?</a>
+            <a href="#exitos">🏆 Éxitos</a>
+            <a href="#docente">👨‍🏫 Docente</a>
+            <a href="#cierre">🚀 Elegir</a>
+        </div>
+    </div>
+</div>
+
+<div class="go-top" id="goTop"><i class="fas fa-arrow-up"></i></div>
+
+<!-- HERO con imagen hero-tic.jpg -->
+<section id="inicio" class="hero">
+    <div class="container">
+        <h1 data-aos="fade-up">El poder de <span>CREAR, RESOLVER</span> y <span>CONECTAR</span></h1>
+        <div class="typing-container" data-aos="fade-up" data-aos-delay="200">
+            <span id="typed-text"></span>
+        </div>
+        <button class="btn" id="btnProtagonista" data-aos="fade-up" data-aos-delay="400">¡Quiero ser protagonista! <i class="fas fa-arrow-right"></i></button>
+    </div>
+</section>
+
+<div class="container">
+
+    <!-- CONTADORES ANIMADOS (sin etiquetas duplicadas) -->
+    <section>
+        <div class="counter-row">
+            <div class="counter-card" data-aos="zoom-in"><div class="counter-number" id="counter1">0</div><p style="font-weight:700;">+ Años de experiencia</p><small>Formando talento digital</small></div>
+            <div class="counter-card" data-aos="zoom-in" data-aos-delay="100"><div class="counter-number" id="counter2">0</div><p style="font-weight:700;">+ Certificaciones</p><small>Google, IBM, Aprende.org</small></div>
+            <div class="counter-card" data-aos="zoom-in" data-aos-delay="200"><div class="counter-number" id="counter3">0</div><p style="font-weight:700;">+ Estudiantes</p><small>Han pasado por la capacitación</small></div>
+            <div class="counter-card" data-aos="zoom-in" data-aos-delay="300"><div class="counter-number" id="counter4">0</div><p style="font-weight:700;">+ Proyectos reales</p><small>Creados por estudiantes</small></div>
+        </div>
+    </section>
+
+    <!-- BENEFICIOS -->
+    <section>
+        <h2 class="section-title" data-aos="fade-right">✅ ¿Por qué estudiar TIC's?</h2>
+        <div class="benefits-row">
+            <div class="benefit-col" data-aos="fade-up"><i class="fas fa-briefcase"></i><h4>En el trabajo</h4><ul><li><i class="fas fa-check-circle"></i> Avance tecnológico</li><li><i class="fas fa-check-circle"></i> Comunicación efectiva</li><li><i class="fas fa-check-circle"></i> Mayor eficiencia</li></ul></div>
+            <div class="benefit-col" data-aos="fade-up" data-aos-delay="100"><i class="fas fa-graduation-cap"></i><h4>En la escuela</h4><ul><li><i class="fas fa-check-circle"></i> Trabajos profesionales</li><li><i class="fas fa-check-circle"></i> Investigación avanzada</li><li><i class="fas fa-check-circle"></i> Portafolio de evidencias</li></ul></div>
+            <div class="benefit-col" data-aos="fade-up" data-aos-delay="200"><i class="fas fa-home"></i><h4>En la vida cotidiana</h4><ul><li><i class="fas fa-check-circle"></i> Comunicación digital</li><li><i class="fas fa-check-circle"></i> Solución de problemas</li><li><i class="fas fa-check-circle"></i> Emprendimiento digital</li></ul></div>
+        </div>
+    </section>
+
+    <!-- PLAN DE ESTUDIOS -->
+    <section id="plan">
+        <h2 class="section-title" data-aos="fade-right">🗺️ ¿Qué voy a aprender? (3ro a 6to semestre)</h2>
+        <div class="timeline">
+            <div class="semester" style="border-top-color:#3b82f6" data-aos="fade-up"><h4>3er Semestre</h4><span class="badge badge-blue">📄 Gestión de archivos de texto</span><span class="badge badge-blue">📊 Hoja de cálculo aplicado</span><p>Word avanzado, tablas dinámicas, macros, formatos profesionales.</p><div class="product" style="color:#3b82f6;">🎯 Producto: Manual técnico digital + Dashboard en Excel</div></div>
+            <div class="semester" style="border-top-color:#8b5cf6" data-aos="fade-up" data-aos-delay="100"><h4>4to Semestre</h4><span class="badge badge-purple">🌐 Comunidades virtuales</span><span class="badge badge-purple">🔧 Mantenimiento y redes</span><p>Community Manager, podcast, <strong>PC Building Simulator</strong>, cableado estructurado.</p><div class="product" style="color:#8b5cf6;">🎯 Producto: Podcast + Canal YouTube + Manual "TecnoResuelve"</div></div>
+            <div class="semester" style="border-top-color:#f59e0b" data-aos="fade-up" data-aos-delay="200"><h4>5to Semestre</h4><span class="badge badge-amber">🗄️ Sistemas de información</span><span class="badge badge-amber">💻 Programación</span><p>Bases de datos relacionales (Access, MariaDB, PostgreSQL), diseño lógico y físico.</p><div class="product" style="color:#f59e0b;">🎯 Producto: Base de datos funcional + Diagrama ER + Consultas + Formularios + Informes</div></div>
+            <div class="semester" style="border-top-color:#ef4444" data-aos="fade-up" data-aos-delay="300"><h4>6to Semestre</h4><span class="badge badge-red">🌐 Diseño web</span><span class="badge badge-red">🎨 Diseño digital</span><p>HTML/CSS, hosting, CorelDRAW, logotipos, animaciones, portafolio.</p><div class="product" style="color:#ef4444;">🎯 Producto: Sitio web publicado + Portafolio profesional</div></div>
+        </div>
+        
+        <h2 class="section-title" style="margin-top: 50px;" data-aos="fade-right">🛠️ Las herramientas que dominarás</h2>
+        <div class="grid-3">
+            <div class="card" data-aos="zoom-in"><i class="fas fa-file-word" style="color:#2b5797;"></i><h3 class="tooltip-icon" data-tooltip="Procesador de textos profesional">Microsoft Word</h3><p>Tablas de contenido, macros, combinación de correspondencia, seguridad.</p><span class="badge badge-blue">3er Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="50"><i class="fas fa-file-excel" style="color:#1e7242;"></i><h3 class="tooltip-icon" data-tooltip="Hoja de cálculo avanzada">Microsoft Excel</h3><p>Fórmulas avanzadas, tablas dinámicas, validación de datos, macros.</p><span class="badge badge-blue">3er Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="100"><i class="fas fa-gamepad" style="color:#8b5cf6;"></i><h3 class="tooltip-icon" data-tooltip="Aprende reparando PCs jugando">PC Building Simulator</h3><p>Aprende mantenimiento de PC, diagnóstico de fallas y ensamble de equipos jugando.</p><span class="badge badge-purple">4to Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="150"><i class="fas fa-microphone-alt" style="color:#8b5cf6;"></i><h3 class="tooltip-icon" data-tooltip="Grabación y edición de audio">Audacity / Riverside</h3><p>Grabación y edición de podcasts, efectos de sonido.</p><span class="badge badge-purple">4to Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="200"><i class="fas fa-database" style="color:#f59e0b;"></i><h3 class="tooltip-icon" data-tooltip="Bases de datos relacionales">Access / MariaDB / PostgreSQL</h3><p>Bases de datos relacionales, diseño lógico y físico, consultas SQL, formularios, informes.</p><span class="badge badge-amber">5to Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="250"><i class="fas fa-chalkboard-user" style="color:#f59e0b;"></i><h3 class="tooltip-icon" data-tooltip="Pseudocódigo y algoritmos">PSeInt</h3><p>Pseudocódigo, diagramas de flujo, lógica de programación.</p><span class="badge badge-amber">5to Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="300"><i class="fas fa-code" style="color:#ef4444;"></i><h3 class="tooltip-icon" data-tooltip="Lenguajes de la web">HTML + CSS + Wix</h3><p>Sitios web responsivos, hosting gratuito, diseño desde cero.</p><span class="badge badge-red">6to Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="350"><i class="fas fa-palette" style="color:#ef4444;"></i><h3 class="tooltip-icon" data-tooltip="Diseño vectorial profesional">CorelDRAW / GIMP</h3><p>Diseño vectorial, logotipos, carteles, Bézier, soldadura/recorte.</p><span class="badge badge-red">6to Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="400"><i class="fas fa-film" style="color:#ef4444;"></i><h3 class="tooltip-icon" data-tooltip="Animación digital">Krita / FlipaClip</h3><p>Animación cuadro por cuadro, GIFs, videos MP4, papel cebolla.</p><span class="badge badge-red">6to Semestre</span></div>
+        </div>
+    </section>
+
+    <!-- TIC's PARA TODAS LAS CARRERAS -->
+    <section id="porque-tic">
+        <div style="background:#fefce8; border-radius:40px; padding:48px 32px" data-aos="fade-up">
+            <h2 class="section-title">🌐 Sin importar la carrera que elijas... las TIC's te darán ventaja</h2>
+            <p style="font-size:1.2rem; text-align:center; margin-bottom:32px;">La tecnología es transversal a TODAS las profesiones.</p>
+            <div class="grid-3">
+                <div class="card" data-aos="flip-left"><i class="fas fa-stethoscope"></i><h3>🩺 Medicina / Enfermería</h3><p>Expedientes clínicos, telemedicina, análisis de datos de pacientes.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="50"><i class="fas fa-gavel"></i><h3>⚖️ Derecho</h3><p>Bases de datos jurídicas, expedientes digitales, firmas electrónicas.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="100"><i class="fas fa-hard-hat"></i><h3>🏗️ Arquitectura / Ingeniería</h3><p>CAD, modelado 3D, presupuestos en Excel, gestión de proyectos.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="150"><i class="fas fa-chart-line"></i><h3>📊 Administración / Contaduría</h3><p>ERP, Excel avanzado, facturación electrónica, análisis financiero.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="200"><i class="fas fa-chalkboard-user"></i><h3>📚 Educación / Pedagogía</h3><p>Google Classroom, Moodle, diseño de contenido digital.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="250"><i class="fas fa-palette"></i><h3>🎨 Diseño / Comunicación</h3><p>CorelDRAW, edición de video, animación, marketing digital.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="300"><i class="fas fa-truck-fast"></i><h3>📦 Logística / Comercio</h3><p>Control de inventarios, e-commerce, bases de datos.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="350"><i class="fas fa-leaf"></i><h3>🌱 Ciencias Ambientales</h3><p>Bases de datos de especies, análisis geoespacial, monitoreo digital.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="400"><i class="fas fa-cogs"></i><h3>🔧 Cualquier carrera</h3><p>Excel, manejo de información, trabajo colaborativo en la nube.</p></div>
+            </div>
+            <div style="background:#fef08a; border-radius:32px; padding:28px; text-align:center; margin-top:32px" data-aos="zoom-in">
+                <i class="fas fa-quote-left" style="font-size:2.5rem; color:#eab308;"></i>
+                <p style="font-size:1.2rem; margin-top:12px;"><strong>Hoy en día, saber tecnología no es una opción, es una necesidad. ¡TIC's te sirve SIEMPRE!</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SITUACIONES DIDÁCTICAS -->
+    <section id="proyectos-sec">
+        <h2 class="section-title" data-aos="fade-right">🎯 Situaciones didácticas: Aprende haciendo</h2>
+        <div class="grid-2">
+            <div class="card" data-aos="fade-up"><i class="fas fa-chart-line" style="color:#8b5cf6;"></i><h3>"Enredando mis empresas en las redes"</h3><p>4to semestre. Crea comunidad virtual, podcast y canal de YouTube.</p><span class="badge badge-purple">Community Manager</span></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="100"><i class="fas fa-desktop" style="color:#8b5cf6;"></i><h3>"TecnoResuelve"</h3><p>4to semestre. Aprende mantenimiento de PC con PC Building Simulator.</p><span class="badge badge-purple">Soporte técnico</span></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="200"><i class="fas fa-database" style="color:#f59e0b;"></i><h3>"Sistema de control escolar"</h3><p>5to semestre. Base de datos desde diseño lógico hasta informes.</p><span class="badge badge-amber">Bases de datos</span></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="300"><i class="fas fa-tree" style="color:#ef4444;"></i><h3>"Poniendo en línea mis raíces"</h3><p>6to semestre. Sitio web completo para emprendedor local.</p><span class="badge badge-red">HTML/CSS</span></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="400"><i class="fas fa-paintbrush" style="color:#ef4444;"></i><h3>"Diseñando en mi comunidad"</h3><p>6to semestre. Logotipo, carteles, animaciones y portafolio.</p><span class="badge badge-red">CorelDRAW</span></div>
+        </div>
+        
+        <div style="background:linear-gradient(135deg,#eef2ff,#e0e7ff); border-radius:40px; padding:40px 32px; margin-top:40px" data-aos="flip-up">
+            <h2 class="section-title" style="font-size:1.8rem;">🔗 Proyecto integrador: Tu emprendimiento de 3ro a 6to</h2>
+            <p>Desde el primer semestre hasta el último trabajarás con una <strong>MISMA microempresa</strong> (real o ficticia).</p>
+            <div class="grid-2" style="margin-top:24px">
+                <div><span class="badge badge-blue">3ro</span> Analizarás sus costos y ventas en Excel</div>
+                <div><span class="badge badge-purple">4to</span> Crearás sus redes sociales, podcast y canal</div>
+                <div><span class="badge badge-amber">5to</span> <strong>Desarrollarás la BASE DE DATOS desde cero</strong></div>
+                <div><span class="badge badge-red">6to</span> Diseñarás su sitio web, logotipo y animaciones</div>
+            </div>
+            <p style="margin-top:28px; text-align:center;"><strong>🎁 Al finalizar tendrás un PORTAFOLIO PROFESIONAL completo.</strong></p>
+        </div>
+    </section>
+
+    <!-- QUÉ HACE ESPECIAL A TIC's -->
+    <section>
+        <h2 class="section-title" data-aos="fade-right">🌟 ¿Qué hace especial a TIC's?</h2>
+        <div class="grid-3">
+            <div class="card" data-aos="flip-up"><i class="fas fa-rocket" style="color:#3b82f6;"></i><h3>🎯 Enfoque</h3><p>Proyectos reales y solución de problemas del entorno.</p></div>
+            <div class="card" data-aos="flip-up" data-aos-delay="50"><i class="fas fa-users" style="color:#8b5cf6;"></i><h3>⚙️ Metodología</h3><p>ABP, gamificación y trabajo colaborativo.</p></div>
+            <div class="card" data-aos="flip-up" data-aos-delay="100"><i class="fas fa-tools" style="color:#f59e0b;"></i><h3>🛠️ Herramientas</h3><p>PC Building Simulator, CorelDRAW, Krita, Wix, Access, PSeInt.</p></div>
+            <div class="card" data-aos="flip-up" data-aos-delay="150"><i class="fas fa-folder-open" style="color:#10b981;"></i><h3>📁 Resultado</h3><p>Portafolio digital con productos reales.</p></div>
+            <div class="card" data-aos="flip-up" data-aos-delay="200"><i class="fas fa-briefcase" style="color:#ef4444;"></i><h3>🤝 Vinculación</h3><p>Trabajas con emprendedores locales (PAEC).</p></div>
+            <div class="card" data-aos="flip-up" data-aos-delay="250"><i class="fas fa-certificate" style="color:#f59e0b;"></i><h3>🎓 Certificación oficial</h3><p>Estándares CONOCER con validez en el sector productivo.</p><span class="badge badge-green">Validez oficial</span></div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIOS -->
+    <section id="exitos">
+        <h2 class="section-title" data-aos="fade-right">🎓 Historias reales: Alguien como tú</h2>
+        <div class="grid-2">
+            <div class="card" data-aos="fade-up"><div><span class="badge badge-blue">🎓 3er Semestre</span> <span class="badge badge-green">Recién llegado</span></div><i class="fas fa-user-graduate" style="font-size:2rem; color:#3b82f6; margin:12px 0;"></i><h3>Carlos M.</h3><p><em>"Cuando entré a 3ro no sabía nada. Ahora hago documentos profesionales con macros y dashboards en Excel."</em></p><p style="color:#3b82f6;">🎯 Logro: Manual técnico + Dashboard</p></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="100"><div><span class="badge badge-purple">📱 4to Semestre</span> <span class="badge badge-green">Ya domina redes</span></div><i class="fas fa-microphone-alt" style="font-size:2rem; color:#8b5cf6; margin:12px 0;"></i><h3>Daniela R.</h3><p><em>"Mi podcast tuvo más de 1000 reproducciones. Aprendí a reparar PCs con PC Building Simulator."</em></p><p style="color:#8b5cf6;">🎯 Logro: Podcast + YouTube + Mantenimiento</p></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="200"><div><span class="badge badge-amber">🗄️ 5to Semestre</span> <span class="badge badge-green">Analista de datos</span></div><i class="fas fa-database" style="font-size:2rem; color:#f59e0b; margin:12px 0;"></i><h3>Javier L.</h3><p><em>"Diseñé una base de datos completa para la papelería de mi papá. Ahora sabe sus ventas al instante."</em></p><p style="color:#f59e0b;">🎯 Logro: Base de datos + SQL + Reportes</p></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="300"><div><span class="badge badge-red">🌐 6to Semestre</span> <span class="badge badge-green">Profesional digital</span></div><i class="fas fa-code" style="font-size:2rem; color:#ef4444; margin:12px 0;"></i><h3>Sofía G.</h3><p><em>"Diseñé el logotipo, carteles y página web del negocio familiar. Las ventas aumentaron."</em></p><p style="color:#ef4444;">🎯 Logro: Sitio web + Identidad visual + Portafolio</p></div>
+        </div>
+        <div style="background:#e0f2fe; border-radius:32px; padding:28px; text-align:center; margin-top:32px" data-aos="zoom-in">
+            <p><strong>Estudiantes reales. En 3ro empezaron desde cero. En 6to ya son profesionales digitales. ¿El próximo eres tú?</strong></p>
+        </div>
+    </section>
+
+    <!-- DOCENTE CON FOTO logo_tutor.png -->
+    <section id="docente" style="background:linear-gradient(135deg,#0f172a,#1e293b); border-radius:40px; padding:48px 32px; color:white" data-aos="flip-up">
+        <div style="display:flex; flex-wrap:wrap; gap:40px; align-items:center; justify-content:center">
+            <div style="text-align:center">
+                <img src="logo_tutor.png" alt="Docente LIA José Huidobro" class="docente-imagen">
+                <p style="margin-top:12px; color:#94a3b8;">+20 años formando talento</p>
+            </div>
+            <div style="flex:2; min-width:260px">
+                <h2 style="font-size:2rem;">👨‍🏫 Tu docente: <span style="color:#38bdf8;">LIA José Huidobro Espejel</span></h2>
+                <div style="display:flex; flex-wrap:wrap; gap:10px; margin:20px 0">
+                    <span class="badge badge-blue">🎓 Google UX Design</span>
+                    <span class="badge badge-purple">💻 Programación escritorio</span>
+                    <span class="badge badge-amber">📱 Desarrollo web+móvil</span>
+                    <span class="badge badge-red">🛠️ Google Soporte TI</span>
+                    <span class="badge badge-green">💾 Oracle+Progress</span>
+                </div>
+                <p>Licenciado en Informática Administrativa (LIA) con +20 años de experiencia. He trabajado en <strong>General Electric</strong> y <strong>Grupo LALA</strong>. Catedrático en UAEM e instructor en COBAEM. 30+ certificaciones incluyendo doble certificación de Google.</p>
+                <div style="display:flex; flex-wrap:wrap; gap:24px; margin-top:20px">
+                    <div><i class="fas fa-database" style="color:#fbbf24;"></i> SQL + NoSQL</div>
+                    <div><i class="fas fa-globe" style="color:#fbbf24;"></i> Inglés técnico</div>
+                    <div><i class="fas fa-heart" style="color:#ef4444;"></i> Apasionado por la enseñanza</div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:32px; border-top:1px solid #334155; padding-top:24px; text-align:center">
+            <p><i class="fas fa-envelope"></i> josehuidobro03@my.cobaemex.edu.mx</p>
+        </div>
+    </section>
+
+    <!-- ÉTICA DIGITAL -->
+    <section>
+        <div class="ethics-card" data-aos="zoom-in"><i class="fas fa-shield-alt" style="font-size:3.5rem; color:#059669;"></i><h2 style="margin:16px 0;">Ciudadano Digital <span style="color:#059669;">Responsable y Ético</span></h2><p>Formamos estudiantes con postura ética y responsable en el entorno digital.</p>
+        <div class="ethics-grid"><div class="ethics-item"><i class="fas fa-lock"></i> Privacidad</div><div class="ethics-item"><i class="fas fa-copyright"></i> Derechos de autor</div><div class="ethics-item"><i class="fas fa-hand-peace"></i> Respeto en redes</div><div class="ethics-item"><i class="fas fa-globe"></i> Tecnología para el bien común</div></div></div>
+    </section>
+
+    <!-- CIERRE CON QR -->
+    <section id="cierre" style="background:linear-gradient(110deg,#eef2ff,#ffffff); border-radius:48px; margin-bottom:40px; padding:48px 32px; text-align:center" data-aos="zoom-in-up">
+        <h2 class="section-title">🚀 ¡Elige TIC's y construye tu futuro!</h2>
+        <p><strong>Tecnologías de la Información y la Comunicación</strong><br>Capacitación para el trabajo · COBAEM 03 Chimalhuacán</p>
+        <div class="qr-container"><img src="qrtics.png" alt="QR TIC's" width="180" height="180"></div>
+        <p style="margin-top:16px;">📱 Escanea y guarda esta página en tu celular</p>
+        <button class="btn" style="background:linear-gradient(135deg,#0f172a,#1e293b); margin-top:24px" id="btnFinal">¡Quiero ser protagonista!</button>
+        <p style="margin-top:32px;">Docente: LIA José Huidobro Espejel · Ciclo Escolar 2025-2026</p>
+        <p><i class="fas fa-check-circle" style="color:#10b981;"></i> Metodología activa · ABP · Gamificación · Trabajo colaborativo · Vinculación PAEC</p>
+    </section>
+</div>
+
+<footer>
+    <div class="container">
+        <p><strong>Tecnologías de la Información y la Comunicación (TIC's)</strong> | Capacitación para el trabajo</p>
+        <p>COBAEM 03 Chimalhuacán | CCT: 15ECB0003Q</p>
+        <p>Formando ciudadanos digitales éticos, creativos y responsables</p>
+        <p style="font-size:0.8rem;">Docente: LIA José Huidobro Espejel | josehuidobro03@my.cobaemex.edu.mx</p>
+    </div>
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+<script>
+    AOS.init({ duration: 800, once: true, offset: 50 });
+    
+    new Typed('#typed-text', {
+        strings: ['💻 <span class="typing-text">Aprenderás a programar desde cero</span>','🎙️ <span class="typing-text">Crearás tu propio podcast</span>','🌐 <span class="typing-text">Diseñarás sitios web profesionales</span>','🎨 <span class="typing-text">Harás logotipos y animaciones</span>','🛠️ <span class="typing-text">Repararás computadoras</span>','📊 <span class="typing-text">Dominarás Excel y bases de datos</span>','🚀 <span class="typing-text">¡Construirás tu futuro digital!</span>'],
+        typeSpeed: 50, backSpeed: 30, backDelay: 2000, loop: true, cursorChar: '|'
+    });
+    
+    function animateCounter(id, target) {
+        let count = 0;
+        const element = document.getElementById(id);
+        const interval = setInterval(() => { if (count < target) { count++; element.innerText = count; } else clearInterval(interval); }, 30);
+    }
+    animateCounter('counter1', 20);
+    animateCounter('counter2', 30);
+    animateCounter('counter3', 5000);
+    animateCounter('counter4', 1000);
+    
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinksEl = document.getElementById('navLinks');
+    if(menuToggle) menuToggle.onclick = () => navLinksEl.classList.toggle('show');
+    
+    document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById(this.getAttribute('href').substring(1)).scrollIntoView({ behavior: 'smooth' });
+        if(navLinksEl.classList.contains('show')) navLinksEl.classList.remove('show');
+    }));
+    
+    document.querySelector('.logo').onclick = () => document.getElementById('inicio').scrollIntoView({ behavior: 'smooth' });
+    
+    const goTop = document.getElementById('goTop');
+    window.onscroll = () => { 
+        goTop.classList.toggle('show', window.scrollY > 300); 
+        const navbar = document.getElementById('navbar');
+        if(window.scrollY > 50) navbar.classList.add('scrolled'); 
+        else navbar.classList.remove('scrolled'); 
+    };
+    goTop.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    const alerta = () => Swal.fire({ title: '🎉 ¡Excelente decisión!', text: 'Habla con tu tutor para elegir TIC\'s. ¡Te esperamos!', icon: 'success', confirmButtonColor: '#3b82f6', confirmButtonText: '¡Lo haré!' });
+    document.getElementById('btnProtagonista')?.addEventListener('click', alerta);
+    document.getElementById('btnFinal')?.addEventListener('click', alerta);
+</script>
+</body>
+</html>
