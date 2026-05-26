@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>TIC's · Capacitación para el trabajo · COBAEM 03</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f8fafc; 
+            color: #1e293b; 
+            line-height: 1.5; 
+            font-size: 18px;
+        }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+        
+        /* ===== NAVBAR CON CARRUSEL ===== */
+        .navbar { 
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        
+        .carrusel-container {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            padding: 6px 0;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .carrusel-content {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            letter-spacing: 0.3px;
+        }
+        .carrusel-content i {
+            margin-right: 8px;
+            color: #fbbf24;
+        }
+        
+        .nav-main {
+            padding: 14px 0;
+        }
+        .nav-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .logo { 
+            color: white; 
+            font-size: 1.2rem; 
+            font-weight: 800; 
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .logo:hover { opacity: 0.9; }
+        .logo span { color: #38bdf8; }
+        .logo small { font-size: 0.65rem; font-weight: 400; color: #94a3b8; display: block; }
+        
+        .menu-toggle { display: none; background: none; border: none; color: white; font-size: 1.6rem; cursor: pointer; padding: 8px; }
+        .nav-links { display: flex; gap: 24px; flex-wrap: wrap; }
+        .nav-links a { color: #cbd5e1; text-decoration: none; font-weight: 600; font-size: 0.95rem; transition: all 0.2s; padding: 8px 0; position: relative; }
+        .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: #38bdf8; transition: width 0.3s ease; }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: #38bdf8; }
+        
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-links { display: none; width: 100%; flex-direction: column; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #334155; text-align: center; }
+            .nav-links.show { display: flex; }
+            .nav-links a::after { display: none; }
+            body { font-size: 16px; }
+            .carrusel-content { font-size: 0.7rem; }
+            .logo { font-size: 1rem; }
+        }
+        
+        section { padding: 70px 0; border-bottom: 1px solid #e2e8f0; }
+        .section-title { 
+            font-size: 2.2rem; font-weight: 800; margin-bottom: 24px; 
+            background: linear-gradient(135deg, #0f172a, #3b82f6, #8b5cf6);
+            background-clip: text; -webkit-background-clip: text; color: transparent;
+        }
+        
+        .hero { 
+            background: linear-gradient(135deg, rgba(15,23,42,0.85), rgba(15,23,42,0.92)), url('hero-tic.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white; 
+            padding: 100px 0; 
+            text-align: center; 
+            position: relative;
+        }
+        .hero h1 { font-size: 3.2rem; font-weight: 900; margin-bottom: 20px; }
+        .hero h1 span { color: #38bdf8; }
+        .typing-container { font-size: 1.2rem; max-width: 750px; margin: 0 auto 30px; min-height: 80px; }
+        .typing-text { background: linear-gradient(90deg, #38bdf8, #8b5cf6); background-clip: text; -webkit-background-clip: text; color: transparent; font-weight: 700; }
+        
+        .btn { display: inline-block; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; padding: 14px 34px; border-radius: 60px; font-weight: 700; font-size: 1rem; transition: all 0.3s ease; cursor: pointer; border: none; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(59,130,246,0.4); }
+        
+        .go-top { position: fixed; bottom: 30px; right: 30px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s; z-index: 999; }
+        .go-top.show { opacity: 1; visibility: visible; }
+        
+        .tooltip-icon { position: relative; cursor: help; border-bottom: 1px dashed #3b82f6; display: inline-block; }
+        .tooltip-icon:hover::after { content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); background: #0f172a; color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.7rem; white-space: nowrap; z-index: 100; }
+        
+        /* Efectos hover */
+        .counter-card, .benefit-col, .semester, .card, .qr-container {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .counter-card:hover, .benefit-col:hover, .semester:hover, .card:hover, .qr-container:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px rgba(0,0,0,0.12);
+        }
+        .qr-container:hover { transform: translateY(-5px); }
+        
+        .docente-imagen {
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .docente-imagen:hover {
+            transform: scale(1.05);
+            border-color: #fbbf24;
+        }
+        
+        .ethics-item {
+            transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+        }
+        .ethics-item:hover {
+            transform: scale(1.05);
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .counter-card { background: white; border-radius: 28px; padding: 28px; box-shadow: 0 12px 24px rgba(0,0,0,0.08); text-align: center; }
+        .counter-number { font-size: 3rem; font-weight: 800; background: linear-gradient(135deg, #3b82f6, #8b5cf6); background-clip: text; -webkit-background-clip: text; color: transparent; }
+        
+        .grid-2, .grid-3, .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 20px; }
+        .card { background: white; border-radius: 28px; padding: 26px; box-shadow: 0 12px 24px rgba(0,0,0,0.08); border: 1px solid #eef2ff; }
+        .card i { font-size: 2rem; margin-bottom: 14px; display: inline-block; }
+        .card h3 { font-size: 1.3rem; margin-bottom: 10px; font-weight: 700; }
+        .card p { font-size: 0.9rem; color: #475569; }
+        
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 700; margin: 8px 4px 0 0; }
+        .badge-blue { background: #3b82f6; color: white; }
+        .badge-purple { background: #8b5cf6; color: white; }
+        .badge-amber { background: #f59e0b; color: white; }
+        .badge-red { background: #ef4444; color: white; }
+        .badge-green { background: #10b981; color: white; }
+        
+        .timeline { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 30px; }
+        .semester { background: white; border-radius: 28px; padding: 24px; flex: 1; min-width: 220px; border-top: 8px solid #3b82f6; box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .semester h4 { font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 10px; }
+        .semester .product { font-size: 0.8rem; font-weight: 700; margin-top: 12px; }
+        
+        .benefits-row { display: flex; flex-wrap: wrap; gap: 28px; margin: 30px 0; }
+        .benefit-col { flex: 1; min-width: 220px; background: white; border-radius: 28px; padding: 28px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .benefit-col i { font-size: 2.2rem; color: #3b82f6; margin-bottom: 12px; }
+        .benefit-col h4 { font-size: 1.3rem; margin-bottom: 16px; font-weight: 700; }
+        .benefit-col ul { text-align: left; list-style: none; }
+        .benefit-col ul li { margin: 12px 0; display: flex; gap: 10px; align-items: center; font-size: 0.9rem; }
+        .benefit-col ul li i.fa-check-circle { color: #10b981; width: 22px; }
+        
+        .ethics-card { background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-radius: 32px; padding: 40px; text-align: center; }
+        .ethics-grid { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; margin-top: 24px; }
+        .ethics-item { background: white; border-radius: 60px; padding: 10px 24px; font-weight: 600; font-size: 0.9rem; cursor: pointer; }
+        
+        .qr-container { background: white; border-radius: 28px; padding: 20px; display: inline-block; box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+        .qr-container img { width: 170px; height: 170px; display: block; border-radius: 16px; }
+        
+        .counter-row { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; margin: 40px 0; }
+        
+        .docente-imagen { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 4px solid #3b82f6; }
+        
+        /* Reproductor de podcast */
+        .podcast-section {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border-radius: 32px;
+            padding: 32px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        .podcast-section audio {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 40px;
+        }
+        
+        footer { background: #0f172a; color: #94a3b8; text-align: center; padding: 35px 0; font-size: 0.85rem; }
+        
+        @media (max-width: 640px) {
+            .section-title { font-size: 1.6rem; }
+            .hero h1 { font-size: 2rem; }
+            .hero { padding: 60px 0; }
+            .typing-container { font-size: 0.9rem; min-height: 70px; }
+            .btn { padding: 12px 24px; font-size: 0.9rem; }
+            .card { padding: 18px; }
+            .counter-number { font-size: 2.2rem; }
+            .docente-imagen { width: 80px; height: 80px; }
+            .qr-container img { width: 130px; height: 130px; }
+            .podcast-section { padding: 24px; margin: 30px 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar" id="navbar">
+    <div class="carrusel-container">
+        <div class="carrusel-content" id="carruselContent">
+            <i class="fas fa-graduation-cap"></i> <span id="carruselNombre">Cargando estudiantes...</span>
+        </div>
+    </div>
+    <div class="nav-main">
+        <div class="container nav-flex">
+            <div class="logo" onclick="location.href='#inicio'">TIC's <span>COBAEM 03</span><small>Tecnologías de la Información y la Comunicación</small></div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <div class="nav-links" id="navLinks">
+                <a href="#inicio">Inicio</a>
+                <a href="#plan">Plan de estudios</a>
+                <a href="#proyectos-sec">Proyectos</a>
+                <a href="#porque-tic">¿Por qué TIC's?</a>
+                <a href="#exitos">Éxitos</a>
+                <a href="#docente">Docente</a>
+                <a href="#cierre">Elegir</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="go-top" id="goTop"><i class="fas fa-arrow-up"></i></div>
+
+<!-- HERO -->
+<section id="inicio" class="hero">
+    <div class="container">
+        <h1 data-aos="fade-up">El poder de <span>CREAR, RESOLVER</span> y <span>CONECTAR</span></h1>
+        <div class="typing-container" data-aos="fade-up" data-aos-delay="200">
+            <span id="typed-text"></span>
+        </div>
+        <button class="btn" id="btnProtagonista" data-aos="fade-up" data-aos-delay="400">¡Quiero ser protagonista! <i class="fas fa-arrow-right"></i></button>
+    </div>
+</section>
+
+<div class="container">
+
+    <!-- ============================================================ -->
+    <!-- SECCIÓN PODCAST (OPCIÓN A - AL INICIO)                      -->
+    <!-- ============================================================ -->
+    <div class="podcast-section" data-aos="fade-up" data-aos-delay="100">
+        <i class="fas fa-headphones" style="font-size: 2.5rem; color: #3b82f6; margin-bottom: 12px; display: inline-block;"></i>
+        <h3 style="font-size: 1.3rem; margin-bottom: 8px;">🎧 Escucha el resumen de la presentación</h3>
+        <p style="color: #475569; margin-bottom: 20px;">¿Prefieres escuchar? Aquí tienes un podcast con todo lo que aprenderás en TIC's.</p>
+        
+        <!-- Reproductor de audio -->
+        <audio controls style="width: 100%; max-width: 500px; border-radius: 40px;">
+            <source src="podcast-tic.mp3" type="audio/mpeg">
+            Tu navegador no soporta el elemento de audio.
+        </audio>
+        
+        <p style="font-size: 0.7rem; color: #94a3b8; margin-top: 12px;">
+            <i class="fas fa-download"></i> 
+            <a href="podcast-tic.mp3" download style="color: #3b82f6; text-decoration: none;">Descargar podcast</a> (MP3, ~2 MB)
+        </p>
+    </div>
+
+    <!-- CONTADORES ANIMADOS -->
+    <section>
+        <div class="counter-row" id="contadoresSection">
+            <div class="counter-card" data-aos="zoom-in"><div class="counter-number" id="counter1">0</div><p style="font-weight:700;">+ Años de experiencia</p><small>Formando talento digital</small></div>
+            <div class="counter-card" data-aos="zoom-in" data-aos-delay="100"><div class="counter-number" id="counter2">0</div><p style="font-weight:700;">+ Certificaciones</p><small>Google, IBM, Aprende.org</small></div>
+            <div class="counter-card" data-aos="zoom-in" data-aos-delay="200"><div class="counter-number" id="counter3">0</div><p style="font-weight:700;">+ Estudiantes</p><small>Han pasado por la capacitación</small></div>
+            <div class="counter-card" data-aos="zoom-in" data-aos-delay="300"><div class="counter-number" id="counter4">0</div><p style="font-weight:700;">+ Proyectos reales</p><small>Creados por estudiantes</small></div>
+        </div>
+    </section>
+
+    <!-- BENEFICIOS -->
+    <section>
+        <h2 class="section-title" data-aos="fade-right">✅ ¿Por qué estudiar TIC's?</h2>
+        <div class="benefits-row">
+            <div class="benefit-col" data-aos="fade-up"><i class="fas fa-briefcase"></i><h4>En el trabajo</h4><ul><li><i class="fas fa-check-circle"></i> Avance tecnológico</li><li><i class="fas fa-check-circle"></i> Comunicación efectiva</li><li><i class="fas fa-check-circle"></i> Mayor eficiencia</li></ul></div>
+            <div class="benefit-col" data-aos="fade-up" data-aos-delay="100"><i class="fas fa-graduation-cap"></i><h4>En la escuela</h4><ul><li><i class="fas fa-check-circle"></i> Trabajos profesionales</li><li><i class="fas fa-check-circle"></i> Investigación avanzada</li><li><i class="fas fa-check-circle"></i> Portafolio de evidencias</li></ul></div>
+            <div class="benefit-col" data-aos="fade-up" data-aos-delay="200"><i class="fas fa-home"></i><h4>En la vida cotidiana</h4><ul><li><i class="fas fa-check-circle"></i> Comunicación digital</li><li><i class="fas fa-check-circle"></i> Solución de problemas</li><li><i class="fas fa-check-circle"></i> Emprendimiento digital</li></ul></div>
+        </div>
+    </section>
+
+    <!-- PLAN DE ESTUDIOS -->
+    <section id="plan">
+        <h2 class="section-title" data-aos="fade-right">🗺️ ¿Qué voy a aprender? (3ro a 6to semestre)</h2>
+        <div class="timeline">
+            <div class="semester" style="border-top-color:#3b82f6" data-aos="fade-up"><h4>3er Semestre</h4><span class="badge badge-blue">📄 Gestión de archivos de texto</span><span class="badge badge-blue">📊 Hoja de cálculo aplicado</span><p>Word avanzado, tablas dinámicas, macros, formatos profesionales.</p><div class="product" style="color:#3b82f6;">🎯 Producto: Manual técnico digital + Reportes en Excel</div></div>
+            <div class="semester" style="border-top-color:#8b5cf6" data-aos="fade-up" data-aos-delay="100"><h4>4to Semestre</h4><span class="badge badge-purple">🌐 Comunidades virtuales</span><span class="badge badge-purple">🔧 Mantenimiento y redes</span><p>Community Manager, podcast, <strong>PC Building Simulator</strong>, cableado estructurado.</p><div class="product" style="color:#8b5cf6;">🎯 Producto: Podcast + Canal YouTube + Manual "TecnoResuelve"</div></div>
+            <div class="semester" style="border-top-color:#f59e0b" data-aos="fade-up" data-aos-delay="200"><h4>5to Semestre</h4><span class="badge badge-amber">🗄️ Sistemas de información</span><span class="badge badge-amber">💻 Programación</span><p>Bases de datos relacionales (Access, MariaDB, PostgreSQL), diseño lógico y físico.</p><div class="product" style="color:#f59e0b;">🎯 Producto: Base de datos funcional + Diagrama ER + Consultas + Formularios + Informes</div></div>
+            <div class="semester" style="border-top-color:#ef4444" data-aos="fade-up" data-aos-delay="300"><h4>6to Semestre</h4><span class="badge badge-red">🌐 Diseño web</span><span class="badge badge-red">🎨 Diseño digital</span><p>HTML/CSS, hosting, CorelDRAW, logotipos, animaciones, portafolio.</p><div class="product" style="color:#ef4444;">🎯 Producto: Sitio web publicado + Portafolio profesional</div></div>
+        </div>
+        
+        <h2 class="section-title" style="margin-top: 50px;" data-aos="fade-right">🛠️ Las herramientas que dominarás</h2>
+        <div class="grid-3">
+            <div class="card" data-aos="zoom-in"><i class="fas fa-file-word" style="color:#2b5797;"></i><h3 class="tooltip-icon" data-tooltip="Procesador de textos profesional">Microsoft Word</h3><p>Tablas de contenido, macros, combinación de correspondencia, seguridad.</p><span class="badge badge-blue">3er Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="50"><i class="fas fa-file-excel" style="color:#1e7242;"></i><h3 class="tooltip-icon" data-tooltip="Hoja de cálculo avanzada">Microsoft Excel</h3><p>Fórmulas avanzadas, tablas dinámicas, validación de datos, macros.</p><span class="badge badge-blue">3er Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="100"><i class="fas fa-gamepad" style="color:#8b5cf6;"></i><h3 class="tooltip-icon" data-tooltip="Aprende reparando PCs jugando">PC Building Simulator</h3><p>Aprende mantenimiento de PC, diagnóstico de fallas y ensamble de equipos jugando.</p><span class="badge badge-purple">4to Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="150"><i class="fas fa-microphone-alt" style="color:#8b5cf6;"></i><h3 class="tooltip-icon" data-tooltip="Grabación y edición de audio">Audacity / Riverside</h3><p>Grabación y edición de podcasts, efectos de sonido.</p><span class="badge badge-purple">4to Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="200"><i class="fas fa-database" style="color:#f59e0b;"></i><h3 class="tooltip-icon" data-tooltip="Bases de datos relacionales">Access / MariaDB / PostgreSQL</h3><p>Bases de datos relacionales, diseño lógico y físico, consultas SQL, formularios, informes.</p><span class="badge badge-amber">5to Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="250"><i class="fas fa-chalkboard-user" style="color:#f59e0b;"></i><h3 class="tooltip-icon" data-tooltip="Pseudocódigo y algoritmos">PSeInt</h3><p>Pseudocódigo, diagramas de flujo, lógica de programación.</p><span class="badge badge-amber">5to Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="300"><i class="fas fa-code" style="color:#ef4444;"></i><h3 class="tooltip-icon" data-tooltip="Lenguajes de la web">HTML + CSS + Wix</h3><p>Sitios web responsivos, hosting gratuito, diseño desde cero.</p><span class="badge badge-red">6to Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="350"><i class="fas fa-palette" style="color:#ef4444;"></i><h3 class="tooltip-icon" data-tooltip="Diseño vectorial profesional">CorelDRAW / GIMP</h3><p>Diseño vectorial, logotipos, carteles, Bézier, soldadura/recorte.</p><span class="badge badge-red">6to Semestre</span></div>
+            <div class="card" data-aos="zoom-in" data-aos-delay="400"><i class="fas fa-film" style="color:#ef4444;"></i><h3 class="tooltip-icon" data-tooltip="Animación digital">Krita / FlipaClip</h3><p>Animación cuadro por cuadro, GIFs, videos MP4, papel cebolla.</p><span class="badge badge-red">6to Semestre</span></div>
+        </div>
+    </section>
+
+    <!-- TIC's PARA TODAS LAS CARRERAS -->
+    <section id="porque-tic">
+        <div style="background:#fefce8; border-radius:40px; padding:48px 32px" data-aos="fade-up">
+            <h2 class="section-title">🌐 Sin importar la carrera que elijas... las TIC's te darán ventaja</h2>
+            <p style="font-size:1.1rem; text-align:center; margin-bottom:32px;">La tecnología es transversal a TODAS las profesiones. Aquí te mostramos por qué:</p>
+            <div class="grid-3">
+                <div class="card" data-aos="flip-left"><i class="fas fa-stethoscope"></i><h3>🩺 Medicina / Enfermería</h3><p>Expedientes clínicos, telemedicina, análisis de datos de pacientes.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="50"><i class="fas fa-gavel"></i><h3>⚖️ Derecho</h3><p>Bases de datos jurídicas, expedientes digitales, firmas electrónicas.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="100"><i class="fas fa-hard-hat"></i><h3>🏗️ Arquitectura / Ingeniería</h3><p>CAD, modelado 3D, presupuestos en Excel, gestión de proyectos.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="150"><i class="fas fa-chart-line"></i><h3>📊 Administración / Contaduría</h3><p>ERP, Excel avanzado, facturación electrónica, análisis financiero.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="200"><i class="fas fa-chalkboard-user"></i><h3>📚 Educación / Pedagogía</h3><p>Google Classroom, Moodle, diseño de contenido digital.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="250"><i class="fas fa-palette"></i><h3>🎨 Diseño / Comunicación</h3><p>CorelDRAW, edición de video, animación, marketing digital.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="300"><i class="fas fa-truck-fast"></i><h3>📦 Logística / Comercio</h3><p>Control de inventarios, e-commerce, bases de datos.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="350"><i class="fas fa-leaf"></i><h3>🌱 Ciencias Ambientales</h3><p>Bases de datos de especies, análisis geoespacial, monitoreo digital.</p></div>
+                <div class="card" data-aos="flip-left" data-aos-delay="400"><i class="fas fa-cogs"></i><h3>🔧 Cualquier carrera</h3><p>Excel, manejo de información, trabajo colaborativo en la nube.</p></div>
+            </div>
+            <div style="background:#fef08a; border-radius:32px; padding:28px; text-align:center; margin-top:32px" data-aos="zoom-in">
+                <i class="fas fa-quote-left" style="font-size:2.5rem; color:#eab308;"></i>
+                <p style="font-size:1.1rem; margin-top:12px;"><strong>Hoy en día, saber tecnología no es una opción, es una necesidad. ¡TIC's te sirve SIEMPRE!</strong></p>
+                <p style="margin-top:12px;">📌 Un médico que sabe bases de datos organiza mejor sus pacientes. Un abogado que domina Excel analiza expedientes más rápido. Un arquitecto que diseña sitios web muestra mejor su portafolio.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SITUACIONES DIDÁCTICAS -->
+    <section id="proyectos-sec">
+        <h2 class="section-title" data-aos="fade-right">🎯 Situaciones didácticas: Aprende haciendo</h2>
+        <div class="grid-2">
+            <div class="card" data-aos="fade-up"><i class="fas fa-file-excel" style="color:#1e7242;"></i><h3>"Documentos profesionales y análisis de datos con Excel"</h3><p>3er semestre. Aprende a crear documentos profesionales con Word (macros, tablas de contenido, combinación de correspondencia) y domina Excel a nivel avanzado (fórmulas, funciones, tablas dinámicas, validación de datos).</p><span class="badge badge-blue">📄 Word profesional</span><span class="badge badge-blue">📊 Excel avanzado</span><span class="badge badge-blue">📈 Tablas dinámicas</span><div style="margin-top:12px; font-size:0.8rem; color:#3b82f6; font-weight:600;">🎯 Producto: Manual técnico digital + Reportes en Excel</div></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="100"><i class="fas fa-chart-line" style="color:#8b5cf6;"></i><h3>"Enredando mis empresas en las redes"</h3><p>4to semestre. Crea una comunidad virtual, diseña estrategias de marketing, podcast y canal de YouTube para un negocio local.</p><span class="badge badge-purple">Community Manager</span><span class="badge badge-purple">Redes sociales</span><span class="badge badge-purple">Podcast</span></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="200"><i class="fas fa-desktop" style="color:#8b5cf6;"></i><h3>"TecnoResuelve"</h3><p>4to semestre. Aprende mantenimiento de PC con <strong>PC Building Simulator</strong> y elabora un manual técnico. Configura redes domésticas.</p><span class="badge badge-purple">Soporte técnico</span><span class="badge badge-purple">Hardware</span><span class="badge badge-purple">Redes</span></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="300"><i class="fas fa-database" style="color:#f59e0b;"></i><h3>"Sistema de control escolar / inventarios"</h3><p>5to semestre. Desarrolla una base de datos <strong>desde cero</strong>: diseño lógico, modelo entidad-relación, paso a físico en Access o MariaDB. Crea consultas, formularios, informes y reportes profesionales.</p><span class="badge badge-amber">Bases de datos</span><span class="badge badge-amber">SQL</span><span class="badge badge-amber">Diseño lógico</span></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="400"><i class="fas fa-tree" style="color:#ef4444;"></i><h3>"Poniendo en línea mis raíces"</h3><p>6to semestre. Diseña un sitio web completo para un emprendedor local (como Don Pepe) y publícalo en Internet.</p><span class="badge badge-red">HTML/CSS</span><span class="badge badge-red">Hosting</span><span class="badge badge-red">Diseño web</span></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="500"><i class="fas fa-paintbrush" style="color:#ef4444;"></i><h3>"Diseñando en mi comunidad"</h3><p>6to semestre. Crea la identidad visual completa de una microempresa: logotipo, carteles, animaciones y portafolio.</p><span class="badge badge-red">CorelDRAW</span><span class="badge badge-red">Animación</span><span class="badge badge-red">Diseño gráfico</span></div>
+        </div>
+        
+        <div style="background:linear-gradient(135deg,#eef2ff,#e0e7ff); border-radius:40px; padding:40px 32px; margin-top:40px" data-aos="flip-up">
+            <h2 class="section-title" style="font-size:1.8rem;">🔗 Proyecto integrador: Tu emprendimiento de 3ro a 6to</h2>
+            <p style="font-size:1rem; text-align:center; margin-bottom:24px;">Desde el primer semestre hasta el último trabajarás con una <strong>MISMA microempresa</strong> (real o ficticia).</p>
+            <div class="grid-2" style="margin-top:16px">
+                <div><span class="badge badge-blue">3ro</span> Analizarás sus costos y ventas en Excel</div>
+                <div><span class="badge badge-purple">4to</span> Crearás sus redes sociales, podcast y canal de YouTube</div>
+                <div><span class="badge badge-amber">5to</span> <strong>Desarrollarás la BASE DE DATOS desde cero</strong> (diseño lógico → físico → consultas → formularios → informes)</div>
+                <div><span class="badge badge-red">6to</span> Diseñarás su sitio web, logotipo, carteles y animaciones</div>
+            </div>
+            <p style="margin-top:28px; text-align:center; font-size:1rem;"><strong>🎁 Al finalizar tendrás un PORTAFOLIO PROFESIONAL completo que puedes mostrar en entrevistas de trabajo o para ingresar a la universidad.</strong></p>
+        </div>
+    </section>
+
+    <!-- QUÉ HACE ESPECIAL A TIC's -->
+    <section>
+        <h2 class="section-title" data-aos="fade-right">🌟 ¿Qué hace especial a TIC's?</h2>
+        <div class="grid-3">
+            <div class="card" data-aos="flip-up"><i class="fas fa-rocket" style="color:#3b82f6;"></i><h3>🎯 Enfoque</h3><p>Proyectos reales y solución de problemas del entorno.</p></div>
+            <div class="card" data-aos="flip-up" data-aos-delay="50"><i class="fas fa-users" style="color:#8b5cf6;"></i><h3>⚙️ Metodología</h3><p>ABP, gamificación y trabajo colaborativo.</p></div>
+            <div class="card" data-aos="flip-up" data-aos-delay="100"><i class="fas fa-tools" style="color:#f59e0b;"></i><h3>🛠️ Herramientas profesionales</h3><p>PC Building Simulator, CorelDRAW, Krita, Wix, Access, MariaDB, PSeInt, Audacity.</p></div>
+            <div class="card" data-aos="flip-up" data-aos-delay="150"><i class="fas fa-folder-open" style="color:#10b981;"></i><h3>📁 Resultado tangible</h3><p>Portafolio digital con productos reales: podcast, sitio web, base de datos, logotipos, animaciones.</p></div>
+            <div class="card" data-aos="flip-up" data-aos-delay="200"><i class="fas fa-briefcase" style="color:#ef4444;"></i><h3>🤝 Vinculación laboral</h3><p>Trabajas con emprendedores locales (PAEC) y adquieres competencias reales para el mundo laboral.</p></div>
+            <div class="card" data-aos="flip-up" data-aos-delay="250"><i class="fas fa-certificate" style="color:#f59e0b;"></i><h3>🎓 Certificación oficial</h3><p>Estándares alineados a competencias CONOCER con validez en el sector productivo.</p><span class="badge badge-green">Validez oficial</span></div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIOS -->
+    <section id="exitos">
+        <h2 class="section-title" data-aos="fade-right">🎓 Historias reales: Alguien como tú</h2>
+        <div class="grid-2">
+            <div class="card" data-aos="fade-up"><div><span class="badge badge-blue">🎓 3er Semestre</span> <span class="badge badge-green">Recién llegado</span></div><i class="fas fa-user-graduate" style="font-size:2rem; color:#3b82f6; margin:12px 0;"></i><h3>Carlos M.</h3><p><em>"Cuando entré a 3ro no sabía ni cómo poner negritas en Word. En solo un par de meses aprendí a hacer documentos profesionales con tablas de contenido, macros y hasta un manual técnico completo. ¡Nunca imaginé que Excel pudiera hacer tantas cosas!"</em></p><p style="margin-top:12px; color:#3b82f6; font-weight:600;">🎯 Logro: Manual técnico digital + Dashboard en Excel</p></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="100"><div><span class="badge badge-purple">📱 4to Semestre</span> <span class="badge badge-green">Ya domina redes</span></div><i class="fas fa-microphone-alt" style="font-size:2rem; color:#8b5cf6; margin:12px 0;"></i><h3>Daniela R.</h3><p><em>"Creé un podcast para el negocio de mi mamá con Audacity, ¡tuvo más de 1000 reproducciones! También aprendí a reparar computadoras con PC Building Simulator. Ahora ayudo a mi familia a vender en redes sociales."</em></p><p style="margin-top:12px; color:#8b5cf6; font-weight:600;">🎯 Logro: Podcast publicado + Canal de YouTube + Certificado en mantenimiento</p></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="200"><div><span class="badge badge-amber">🗄️ 5to Semestre</span> <span class="badge badge-green">Analista de datos</span></div><i class="fas fa-database" style="font-size:2rem; color:#f59e0b; margin:12px 0;"></i><h3>Javier L.</h3><p><em>"Diseñé una base de datos completa para la papelería de mi papá. Desde el diagrama entidad-relación hasta las consultas y reportes. Ahora puede saber en segundos cuánto vendió, qué productos faltan y quiénes son sus mejores clientes."</em></p><p style="margin-top:12px; color:#f59e0b; font-weight:600;">🎯 Logro: Base de datos funcional + Consultas SQL + Informes profesionales</p></div>
+            <div class="card" data-aos="fade-up" data-aos-delay="300"><div><span class="badge badge-red">🌐 6to Semestre</span> <span class="badge badge-green">Profesional digital</span></div><i class="fas fa-code" style="font-size:2rem; color:#ef4444; margin:12px 0;"></i><h3>Sofía G.</h3><p><em>"Diseñé el logotipo, los carteles y la página web completa del negocio familiar. ¡Incluso hice una animación de nuestra mascota! Ahora tenemos presencia en Internet y las ventas aumentaron. Me siento lista para estudiar Diseño Digital en la universidad."</em></p><p style="margin-top:12px; color:#ef4444; font-weight:600;">🎯 Logro: Sitio web publicado + Identidad visual completa + Portafolio profesional</p></div>
+        </div>
+        <div style="background:#e0f2fe; border-radius:32px; padding:28px; text-align:center; margin-top:32px" data-aos="zoom-in">
+            <i class="fas fa-chart-line" style="color:#0284c7; font-size:1.5rem;"></i>
+            <p style="margin-top:12px; font-size:1rem;"><strong>Estos son estudiantes reales de nuestra capacitación.</strong><br>En 3ro empezaron desde cero. En 6to ya son profesionales digitales. <strong>¿El próximo eres tú?</strong></p>
+        </div>
+    </section>
+
+    <!-- DOCENTE -->
+    <section id="docente" style="background:linear-gradient(135deg,#0f172a,#1e293b); border-radius:40px; padding:48px 32px; color:white" data-aos="flip-up">
+        <div style="display:flex; flex-wrap:wrap; gap:40px; align-items:center; justify-content:center">
+            <div style="text-align:center">
+                <img src="logo_tutor.jpg" alt="Docente LIA José Huidobro" class="docente-imagen" onerror="this.src='https://via.placeholder.com/110x110?text=Docente'">
+                <p style="margin-top:12px; font-size:0.8rem; color:#94a3b8;">+20 años formando talento</p>
+            </div>
+            <div style="flex:2; min-width:260px">
+                <h2 style="font-size:1.8rem; margin-bottom:4px;">👨‍🏫 Tu docente: <span style="color:#38bdf8;">LIA José Huidobro Espejel</span></h2>
+                <div style="display:flex; flex-wrap:wrap; gap:10px; margin:20px 0">
+                    <span class="badge badge-blue">🎓 Google UX Design Certified</span>
+                    <span class="badge badge-purple">💻 Programación de escritorio</span>
+                    <span class="badge badge-amber">📱 Desarrollo web + móvil</span>
+                    <span class="badge badge-red">🛠️ Google Soporte TI Certified</span>
+                    <span class="badge badge-green">💾 Oracle + Progress</span>
+                </div>
+                <p style="line-height:1.7;">Soy <strong>Licenciado en Informática Administrativa (LIA)</strong> con más de <strong>20 años de experiencia</strong> combinando tecnología y docencia. He trabajado en empresas como <strong>General Electric</strong> y <strong>Grupo LALA</strong> administrando sistemas ERP. He sido catedrático en la <strong>Universidad Autónoma del Estado de México</strong> y actualmente soy instructor en <strong>COBAEM</strong>. Cuento con <strong>30+ certificaciones técnicas</strong> incluyendo doble certificación de Google (UX Design y Soporte TI).</p>
+                <div style="display:flex; flex-wrap:wrap; gap:24px; margin-top:20px">
+                    <div><i class="fas fa-database" style="color:#fbbf24;"></i> SQL + NoSQL</div>
+                    <div><i class="fas fa-globe" style="color:#fbbf24;"></i> Inglés técnico</div>
+                    <div><i class="fas fa-heart" style="color:#ef4444;"></i> Apasionado por la enseñanza</div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top:32px; border-top:1px solid #334155; padding-top:24px; text-align:center">
+            <p><i class="fas fa-envelope"></i> josehuidobro03@my.cobaemex.edu.mx</p>
+        </div>
+    </section>
+
+    <!-- ÉTICA DIGITAL -->
+    <section>
+        <div class="ethics-card" data-aos="zoom-in">
+            <i class="fas fa-shield-alt" style="font-size:3rem; color:#059669;"></i>
+            <h2 style="margin:16px 0; font-size:1.6rem;">Ciudadano Digital <span style="color:#059669;">Responsable y Ético</span></h2>
+            <p>Formamos estudiantes con una <strong>postura ética y responsable</strong> en el entorno digital, respetando derechos de autor, protegiendo datos personales y usando la tecnología para el bien común.</p>
+            <div class="ethics-grid">
+                <div class="ethics-item"><i class="fas fa-lock"></i> Privacidad y seguridad</div>
+                <div class="ethics-item"><i class="fas fa-copyright"></i> Derechos de autor</div>
+                <div class="ethics-item"><i class="fas fa-hand-peace"></i> Respeto en redes</div>
+                <div class="ethics-item"><i class="fas fa-globe"></i> Tecnología para el bien común</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CIERRE CON QR -->
+    <section id="cierre" style="background:linear-gradient(110deg,#eef2ff,#ffffff); border-radius:48px; margin-bottom:40px; padding:48px 32px; text-align:center" data-aos="zoom-in-up">
+        <h2 class="section-title" style="font-size:2rem;">🚀 ¡Elige TIC's y construye tu futuro!</h2>
+        <p style="font-size:1rem;"><strong>Tecnologías de la Información y la Comunicación</strong><br>Capacitación para el trabajo · COBAEM 03 Chimalhuacán</p>
+        <div class="qr-container">
+            <img src="qrtics.png" alt="Código QR - Capacitación TIC's" width="170" height="170">
+        </div>
+        <p style="margin-top:16px; font-weight:500;">📱 Escanea este código y guarda esta página en tu celular</p>
+        <button class="btn" style="background:linear-gradient(135deg,#0f172a,#1e293b); margin-top:24px" id="btnFinal">¡Quiero ser protagonista!</button>
+        <p style="margin-top:32px; font-weight:600;">Docente: LIA José Huidobro Espejel · Ciclo Escolar 2025-2026</p>
+        <p style="margin-top:12px;"><i class="fas fa-check-circle" style="color:#10b981;"></i> Metodología activa · ABP · Gamificación · Trabajo colaborativo · Vinculación PAEC</p>
+    </section>
+</div>
+
+<footer>
+    <div class="container">
+        <p><strong>Tecnologías de la Información y la Comunicación (TIC's)</strong> | Capacitación para el trabajo</p>
+        <p>COBAEM 03 Chimalhuacán | CCT: 15ECB0003Q</p>
+        <p style="margin-top:12px;">Formando ciudadanos digitales éticos, creativos y responsables</p>
+        <p style="margin-top:8px; font-size:0.7rem;">Docente: LIA José Huidobro Espejel | josehuidobro03@my.cobaemex.edu.mx</p>
+    </div>
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+<script>
+    // ============================================================
+    // LISTA COMPLETA DE ALUMNOS
+    // ============================================================
+    const alumnos = [
+        "GALICIA JUAREZ IRENE", "RIVERA VARGAS DANNA PAOLA", "ISLAS PIÑA EDUARDO TADEO", "GARCIA LOPEZ YANIN YARITZIN",
+        "REYES SOLIS MELANI LIZBETH", "MONTES CASIMIRO AHIAN ISRAEL", "ALVAREZ RANGEL ERICK SANTIAGO", "CARRASCO CASTRO ANGEL TADEO",
+        "MIRANDA BRISEÑO EDNA ALEJANDRA", "MARTINEZ LOPEZ DANNA AZUL", "BARRIENTOS RODRIGUEZ KAREN ARELI", "LOPEZ VILLALBA MIA ISABELLA",
+        "GARCIA RODRIGUEZ AILEEN ARIADNA", "TAVERA YESCAS SEBASTIAN", "FLORES LORENZO EVELYN GUADALUPE", "DIAZ CRUZ AMERICA YAMILET",
+        "RICO ORDOÑEZ DANIEL", "HERNANDEZ AQUINO AMAYA VIVIANA", "SANCHEZ TRUJILLO ADAMARIS ITZEL", "VARGAS GOMEZ RODRIGO",
+        "GARCIA MORALES LEONARDO ISRAEL", "MAGAÑA MORAN HILDA SARA", "NIEVES HERNANDEZ STEFANY VIANEY", "LEON VICENTE EVELYN ADRIANA",
+        "LOPEZ SALAZAR GONZALO ANDERSON", "LARA SALINAS DAFNE SARAI", "AVENDAÑO GUZMAN ALVARO EDUARDO", "ORTIZ HERNANDEZ MAITE JOSELYN",
+        "LEAL CALDERON HANNA YARELI", "ALCANTARA GONZALEZ LESLY FERNANDA", "ELIZALDE SANCHEZ LEYDA ANDREA", "GARCIA CELIS ANDREA",
+        "SANCHEZ LUIS TABATA MAYTE", "PACHECO LUCIANO GENESIS ABIGAIL", "RAMOS GAONA JOANA OLIMPIA", "HERNANDEZ GARCIA CARINA MONSERRAT",
+        "MENDOZA PEREZ XIMENA GUADALUPE", "CORTES VILCHIS ASHLEY MINELY", "GARCIA SANCHEZ ANDREA", "RONQUILLO HERNANDEZ FATIMA",
+        "RAZO MARTINEZ ORQUIDEA ITZEL", "ROSALES ROMANO SOPHIA ZOE", "SOLIS TEHUITZIL VALERIA", "CANTO LEAL DULCE ARIADNA",
+        "BALDERAS HERRERA DAVID", "MELECIO VALENCIA ANGEL", "LOPEZ VALENCIA KAREN DUBETH", "SANCHEZ HURTADO KIMBERLY JADE",
+        "ROCHA MELO CRISTIAN ALEXANDER", "HERNANDEZ SANCHEZ KEVIN", "FLORES TORRES KARLA DANIELA", "ALONSO CORTES MARISELA ELIDETH",
+        "JIMENEZ MUSQUIZ EMILI VALERIA", "CASTILLO BUENDIA NADIA GABRIELA", "TOLENTINO LOPEZ YASMIN", "MARTINEZ SILES MISAEL",
+        "PAZ GARCIA SAUL", "HERNANDEZ RIVERO NATALY ALEXANDRA", "SUAREZ BECERRA ELBA PAOLA", "GARCIA GONZALEZ BRISA VALENTINA",
+        "HOYOS MONTOYA XIMENA", "CHAVEZ TOLENTINO JENIFER LIZBETH", "TAPIA ARREDONDO SAID INAY", "QUEVEDO HUAXCO AXEL BRAYAN",
+        "GARDUÑO LIRA MIRNA YUNUEN", "CARRASCO HERNANDEZ EIDAN YAEL", "MEDINA ALVAREZ IKER JESUS", "TZONI DOMINGUEZ OSCAR TADEO",
+        "RODRIGUEZ DIEGO VALERIA", "VARGAS HERNANDEZ JOSE CARLOS JUDA", "CRUZ MAYAHUA NICOLAS DAMIAN", "FRIAS ORTEGA ANGEL YARETH",
+        "CRUZ ROSAS ALEXA CAMILA", "MARTINEZ MENDEZ ARLETTE FERNANDA", "RODRIGUEZ FRIAS DHENILSON AZAEL", "GARCIA ESPEJEL JORDAN",
+        "VASQUEZ LOPEZ SARIT JACIEL", "GARCIA RIVERA KATERIN JOSELINE", "HERNANDEZ ANDONEGUI YAIRETH AZUL", "LOPEZ PEREZ KARINA RUBI",
+        "RIVERO PALAFOX MARIEL IRAIS", "MENA SANTIAGO EVELIN VALERIA", "MONROY CASARRUBIAS PAOLA", "IGNACIO HERNANDEZ EDGAR OMAR",
+        "FERRER CRUZ MARIEL JOSABETH", "ARIAS GARCIA DYLAN JOSAFAT", "JIMENEZ DOMINGUEZ KARLA IKARI", "GARCIA CAMPOS AMERICA SARAHI",
+        "ROJAS ZARATE SANTYAGO EMILIANO", "RAMIREZ RAMIREZ ANA LAURA", "GONZALEZ SANCHEZ PIPER ARELI", "PANO TORRES JADE YURIKO",
+        "PONCE PANTOJA CLAUDIA GUADALUPE", "HUERTA SAN AGUSTIN ERZEBET DANAE", "MALDONADO GABRIEL ESTEFANY JULIETTE", "HIPATL JUAREZ ELISSA DANIELA",
+        "PALMA REYES SUJEILY YAMILETH", "CALLEJAS HERNANDEZ DONOVAN ALEXIS", "VALVERDE MORENO DANIEL FARID", "VILCHIS CABRERA ELLIOT",
+        "ESCAMILLA RODRIGUEZ RIHANNA ANDREA", "FUENTES MUÑOZ XIMENA ALEJANDRA", "ESCALONA REYNOSO ARIADNA JAZMIN", "MERCADO MARTINEZ IVON ITALIVI",
+        "CIGARROA BRUNO KARLA YAMILET", "VALVERDE SISCA DEREK ALEXANDER", "FIGUEROA SEGOVIANO GUADALUPE SARAY", "CASIMIRO NEQUIZ ELIOT ALEXANDER",
+        "VASQUEZ GONZALEZ MAYRA YARELI", "MENDOZA OSORNIO JADE JOSHELIN", "CELIS ANDRADE NATALI CECILIA", "PERALTA CARDENAS SANTIAGO",
+        "RUEDA MARTINEZ ALMA DELIA", "CHAVEZ GIL JOSHEP ALEJANDRO", "ABARCA AGUILAR ITZEL AZUCENA", "CARPINTEIRO PEREZ SAMANTHA AGLAE",
+        "VALENCIA VALENCIA JANA", "JAVIER GONZALEZ GUADALUPE", "TORRES VILLAFAN SEBASTIAN", "GARAY GARCIA AILIN GALILEA",
+        "GARCIA LOPEZ MAYRA", "MARCELINO PONCE BRANDON", "VELASCO MEDINA AXEL DANIEL", "DE LA CRUZ LOPEZ AXEL EMILIANO",
+        "HERNANDEZ CRISOSTOMO YOAV ZURIEL", "ZEPAHUA PEREZ JOSE ANTONIO", "JIMENEZ REYNOSO PAOLA", "MEDINA SEDAS FATIMA NAHOMI",
+        "BONILLA COLIN MAYTE GUADALUPE", "OLVERA MARTINEZ DANIELA AZUL", "ORDOÑEZ SANCHEZ DAVID PRISCILIANO", "HERNANDEZ TECAYEHUATL KAZUMI YAMILETH",
+        "VICUÑA LEON THAILI MELANY", "MERINO AVILA XIMENA", "VIERA ORTIZ JAQUELINE", "MARTINEZ GUTIERREZ ANGEL ALEJANDRO",
+        "SERRATO MARTINEZ MITZI GUADALUPE", "MORALES HERNANDEZ DAIRA YAMILE", "REYES JUAREZ URIEL", "VALVERDE CRUZ ANGEL ALEXANDER",
+        "ZUÑIGA CARMONA LILIA DANIELA", "ANGELES AGUILAR DULCE MARIA", "VARGAS RAMIREZ MIA VALERIA", "VALENCIA MONTEJO IRVING ALEXIS",
+        "BUENDIA REYES INGRID YARETZI", "JUAREZ HERNANDEZ XIMENA", "VASQUEZ VALLADARES KIMBERLY DAIANA", "CRUZ MARQUEZ SANTIAGO",
+        "REGALADO VASQUEZ PAULINA MOSA LII", "SEPULVEDA BLANCO KATYA MELISSA", "DELGADO PEREZ MAIRAMY", "DEGOLLADO OLARTE BERENICE MONSERRAT",
+        "FLORES CORTES KARINA", "ESQUIVEL HERNANDEZ VICTOR MANUEL", "RIOS PEREZ NADIA KARINA", "PICHARDO ANTONIO SANTIAGO",
+        "SALINAS ROJAS DORIAN YAEL", "CRUZ VILLA SARAI NAOMI", "HERRERA SORIANO INGRID VIRGINIA", "PARACHE MARTINEZ HALYLY GUADALUPE",
+        "HERNANDEZ HIPOLITO BRYAN EMMANUEL", "VELASQUEZ GOMEZ JUSTIN SAID", "FLORES ALVINO LUIS MISAEL", "SOSA GALICIA KAREN LIZBETH",
+        "ROSALES MENDOZA ALISON VICTORIA", "HERNANDEZ AVENDAÑO DANIELA", "VAZQUEZ CASTILLO LINDSAY AYLIN", "CASTRO BARRERA URIEL ALEXANDER",
+        "AGUIRRE DE LA CRUZ ZOE VALENTINA", "ISIDORO DE JESUS ALISSON XIMENA", "HERNANDEZ PULIDO OSMAR DANIEL", "RAMOS CASTAÑON GENESIS LIZETH",
+        "SALAZAR ALABES SUGELI", "CORRALTITLAN HERNANDEZ ALAN YAEL", "GARCIA SANTIAGO TANIA MONSERRATH", "SANCHEZ OROZCO ANGEL SADQUIEL",
+        "QUINTERO LUJANO ERICK ISRAEL", "AVILA ISLAS FERNANDO", "DE LA CRUZ CAMARGO ALISON YATZIRI", "MENDEZ MONTERO ISAAC NATAN",
+        "ORTEGA NATIVITAS OSCAR", "GONZALEZ MARTINEZ XIMENA", "OCHOA SUAREZ SAMANTHA", "NAVARRETE FUENTES ERIK FERNANDO",
+        "GALICIA BUENDIA ALEXA ESBEIDY", "SANCHEZ HERNANDEZ GUILLERMO CAIN", "GARCIA GALVEZ VALERIA REGINA", "SOSA RIVERA ANGEL ALEXANDER",
+        "CONDE VILORIA JESUS URIEL", "SOTO VEGA NATALIA PAOLA", "ULLOA ROSALES VALERIA", "VILLEGAS ROJAS BRAYAN URIEL",
+        "SALINAS GARCIA MIGUEL ANTONIO", "BALBUENA LOPEZ JUAN ALBERTO", "HERNANDEZ HUERTA MELISSA ALEXANDRA", "MONRROY PEREZ NAHIQUETZALLI KRISTEL",
+        "VALENCIA CORDERO YASMIN YAMILETH", "ENCISO ALBEAR JESUS AZAEL", "GOMEZ ALONSO JOSE ANTONIO", "RAMIREZ MORAS JONATHAN GABRIEL",
+        "OLGUIN VALVERDE AXEL ARAM", "RINCON APARICIO ALONDRA CITLALI", "LOPEZ DIEGO VICTOR DAVID", "AGUILAR GARCIA LUIS ANGEL",
+        "MORALES SILVA JOSE FRANCISCO", "CASTRO CRUZ EVELYN JOSELIN", "QUINTANAR VERGARA VALERIA", "RAMIREZ ESCOBEDO OSCAR",
+        "MARTINEZ MARTINEZ ALAN YAIR", "JIMENEZ PONCE MIGUEL ANGEL", "SALINAS SANCHEZ JASMIN", "BONILLA COLIN MARIA FERNANDA",
+        "AVELINO RIOS DULCE CAMILA", "JIMENEZ OROZCO JESUS ADRIAN", "MARTINEZ AHUACATITAN OSIRIS RAMSES", "MORALES HERNANDEZ BRAYAN",
+        "BAUTISTA GONZALEZ JESUS ADRIAN", "ANAYA CERVANTES EDUARDO DANIEL", "CASTILLO MORALES KARLA FERNANDA", "LANDA VENTURA SANTIAGO",
+        "SANTOYO CARREOLA ALISSON RENATA", "GOMEZ JIMENEZ ESTEFANY AILED"
+    ];
+
+    // ============================================================
+    // CARRUSEL DE NOMBRES
+    // ============================================================
+    let indiceCarrusel = 0;
+    const carruselNombre = document.getElementById('carruselNombre');
+    
+    function mostrarNombre() {
+        if (indiceCarrusel >= alumnos.length) {
+            indiceCarrusel = 0;
+        }
+        carruselNombre.innerHTML = `${alumnos[indiceCarrusel]} | ¡Te esperamos en TIC's!`;
+        indiceCarrusel++;
+    }
+    
+    mostrarNombre();
+    setInterval(mostrarNombre, 3500);
+
+    // ============================================================
+    // CONTADORES CON INTERSECTION OBSERVER (velocidad más lenta)
+    // ============================================================
+    let contadoresAnimados = false;
+
+    function iniciarContadores() {
+        if (contadoresAnimados) return;
+        contadoresAnimados = true;
+        
+        function animateCounter(id, target) {
+            let count = 0;
+            const element = document.getElementById(id);
+            if (!element) return;
+            const step = Math.max(1, Math.ceil(target / 250));
+            const intervalTime = 40;
+            
+            const interval = setInterval(() => { 
+                if (count < target) { 
+                    count += step;
+                    if (count > target) count = target;
+                    element.innerText = count; 
+                } else clearInterval(interval); 
+            }, intervalTime);
+        }
+        
+        animateCounter('counter1', 20);
+        animateCounter('counter2', 30);
+        animateCounter('counter3', 10000);
+        animateCounter('counter4', 2000);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                iniciarContadores();
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.3 });
+
+    const contadoresSection = document.getElementById('contadoresSection');
+    if (contadoresSection) {
+        observer.observe(contadoresSection);
+    }
+
+    // ============================================================
+    // INICIALIZACIONES
+    // ============================================================
+    AOS.init({ duration: 800, once: true, offset: 50 });
+    
+    new Typed('#typed-text', {
+        strings: ['💻 <span class="typing-text">Aprenderás a programar desde cero</span>','🎙️ <span class="typing-text">Crearás tu propio podcast</span>','🌐 <span class="typing-text">Diseñarás sitios web profesionales</span>','🎨 <span class="typing-text">Harás logotipos y animaciones</span>','🛠️ <span class="typing-text">Repararás computadoras como un experto</span>','📊 <span class="typing-text">Dominarás Excel y bases de datos</span>','🚀 <span class="typing-text">¡Construirás tu futuro digital!</span>'],
+        typeSpeed: 50, backSpeed: 30, backDelay: 2000, loop: true, cursorChar: '|'
+    });
+    
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinksEl = document.getElementById('navLinks');
+    if(menuToggle) menuToggle.onclick = () => navLinksEl.classList.toggle('show');
+    
+    document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href').substring(1);
+        const target = document.getElementById(targetId);
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+            if(navLinksEl.classList.contains('show')) navLinksEl.classList.remove('show');
+        }
+    }));
+    
+    document.querySelector('.logo')?.addEventListener('click', () => document.getElementById('inicio').scrollIntoView({ behavior: 'smooth' }));
+    
+    const goTop = document.getElementById('goTop');
+    window.onscroll = () => { 
+        goTop.classList.toggle('show', window.scrollY > 300); 
+    };
+    goTop.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    const alerta = () => Swal.fire({ title: '🎉 ¡Excelente decisión!', text: 'Habla con tu tutor para elegir la capacitación en TIC\'s. ¡Te esperamos!', icon: 'success', confirmButtonColor: '#3b82f6', confirmButtonText: '¡Lo haré!' });
+    document.getElementById('btnProtagonista')?.addEventListener('click', alerta);
+    document.getElementById('btnFinal')?.addEventListener('click', alerta);
+</script>
+</body>
+</html>
